@@ -1,4 +1,4 @@
-package ipfs
+package http
 
 import (
 	"fmt"
@@ -6,7 +6,8 @@ import (
 	"net/http"
 )
 
-func httpGet(getURL string) (io.ReadCloser, error) {
+// Get will make an http Get request and handle common errors
+func Get(getURL string) (io.ReadCloser, error) {
 	res, err := http.Get(getURL)
 	if err != nil {
 		return nil, err

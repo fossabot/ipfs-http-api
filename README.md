@@ -2,33 +2,33 @@
 
 ```go
 import (
-  ipfs "github.com/computes/ipfs-http-api"
+  DAG "github.com/computes/ipfs-http-api/dag"
 )
 ```
 
 ## Usage
 
-#### func DagGet
+#### func DAG.Get
 
 ```go
-func DagGet(ipfsURL url.URL, address string) (io.ReadCloser, error)
+func DAG.Get(ipfsURL url.URL, address string) (io.ReadCloser, error)
 ```
 
-DagGet retrieves a dag object from IPFS
+DAG.Get retrieves a dag object from IPFS
 
-#### func DagGetBytes
+#### func DAG.GetBytes
 
 ```go
-func DagGetBytes(ipfsURL url.URL, address string) ([]byte, error)
+func DAG.GetBytes(ipfsURL url.URL, address string) ([]byte, error)
 ```
 
-DagGetBytes retrieves a dag object from IPFS and reads the whole buffer into
+DAG.GetBytes retrieves a dag object from IPFS and reads the whole buffer into
 memory
 
-#### func DagPut
+#### func DAG.Put
 
 ```go
-func DagPut(ipfsURL url.URL, reader io.Reader) (string, error)
+func DAG.Put(ipfsURL url.URL, reader io.Reader) (string, error)
 ```
 
-DagPut uploads a file to IPFS as a DAG Object and returns the address
+DAG.Put uploads a file to IPFS as a DAG Object and returns the address
