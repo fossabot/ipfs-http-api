@@ -11,9 +11,9 @@ import (
 	"net/url"
 )
 
-// DagPut uploads a file to IPFS as a DAG Object and returns
+// Put uploads a file to IPFS as a DAG Object and returns
 // the address
-func DagPut(ipfsURL url.URL, reader io.Reader) (string, error) {
+func Put(ipfsURL url.URL, reader io.Reader) (string, error) {
 	var buffer bytes.Buffer
 
 	dagPutURL := ipfsURL
