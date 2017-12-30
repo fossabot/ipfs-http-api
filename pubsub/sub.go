@@ -44,6 +44,8 @@ func Subscribe(ipfsURL url.URL, topic string) (<-chan []byte, chan error, error)
 
 			messages <- ipfsMessage.Data
 		}
+		close(errors)
+		close(messages)
 	}()
 
 	return messages, errors, nil
