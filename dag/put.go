@@ -62,5 +62,6 @@ func Put(ipfsURL url.URL, reader io.Reader) (string, error) {
 		return "", err
 	}
 
+	debug("Put %v '%v'", dagPutURL.String(), dagPutResponse.Cid.Value)
 	return dagPutResponse.Cid.Value, nil
 }
