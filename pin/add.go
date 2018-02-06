@@ -15,6 +15,7 @@ func Add(ipfsURL url.URL, address string) error {
 	pinAddURL.Path = "/api/v0/pin/add"
 	pinAddURL.RawQuery = query.Encode()
 
+	debug("Add %v", pinAddURL.String())
 	_, err := http.Get(pinAddURL.String())
 	return err
 }

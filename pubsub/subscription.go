@@ -40,6 +40,7 @@ func (s *Subscription) Connect() error {
 	ipfsURL.Path = "/api/v0/pubsub/sub"
 	ipfsURL.RawQuery = query.Encode()
 
+	debug("Subscribe %v", ipfsURL.String())
 	response, err := http.Get(ipfsURL.String())
 	if err != nil {
 		return err

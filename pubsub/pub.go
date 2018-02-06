@@ -15,6 +15,7 @@ func Publish(ipfsURL url.URL, topic, payload string) error {
 	ipfsURL.Path = "/api/v0/pubsub/pub"
 	ipfsURL.RawQuery = query.Encode()
 
+	debug("Publish %v", ipfsURL.String())
 	_, err := http.Get(ipfsURL.String())
 	return err
 }

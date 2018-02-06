@@ -16,5 +16,6 @@ func Cat(ipfsURL url.URL, address string) (io.ReadCloser, error) {
 	catURL.Path = "/api/v0/cat"
 	catURL.RawQuery = query.Encode()
 
+	debug("Cat %v", catURL.String())
 	return http.Get(catURL.String())
 }

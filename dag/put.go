@@ -38,6 +38,7 @@ func Put(ipfsURL url.URL, reader io.Reader) (string, error) {
 		return "", err
 	}
 
+	debug("Put %v", dagPutURL.String())
 	response, err := http.Post(dagPutURL.String(), writer.FormDataContentType(), &buffer)
 	if err != nil {
 		return "", err

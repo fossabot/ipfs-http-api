@@ -17,6 +17,7 @@ func Resolve(ipfsURL url.URL, address string) (string, error) {
 	dagResolveURL.Path = "/api/v0/dag/resolve"
 	dagResolveURL.RawQuery = query.Encode()
 
+	debug("Resolve %v", dagResolveURL.String())
 	reader, err := http.Get(dagResolveURL.String())
 	if err != nil {
 		return "", err
