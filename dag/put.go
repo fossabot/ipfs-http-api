@@ -18,9 +18,6 @@ func Put(ipfsURL url.URL, reader io.Reader) (string, error) {
 
 	dagPutURL := ipfsURL
 	dagPutURL.Path = "/api/v0/dag/put"
-	query := url.Values{}
-	query.Add("pin", "true")
-	dagPutURL.RawQuery = query.Encode()
 
 	writer := multipart.NewWriter(&buffer)
 	fileWriter, err := writer.CreateFormFile("file", "result.json")
