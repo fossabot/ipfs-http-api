@@ -2,6 +2,7 @@ package pubsub
 
 import (
 	"encoding/json"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 )
@@ -36,6 +37,23 @@ func (s *Subscription) Connect() error {
 	ipfsURL := s.ipfsURL
 	query := ipfsURL.Query()
 	query.Add("arg", s.topic)
+	query.Add("discover", "true")
+
+	ipfsURL.Path = "/api/v0/id"
+	idresponse, err := http.Get(ipfsURL.String())
+	if err != nil {
+		return err
+	}
+	idMessage := struct {
+		ID string `json:"ID"`
+	}{}
+	byt, err := ioutil.ReadAll(idresponse.Body)
+	err = json.Unmarshal(byt, &idMessage)
+	if err != nil {
+		return err
+	}
+
+	peerID := idMessage.ID
 
 	ipfsURL.Path = "/api/v0/pubsub/sub"
 	ipfsURL.RawQuery = query.Encode()
@@ -51,11 +69,16 @@ func (s *Subscription) Connect() error {
 		decoder := json.NewDecoder(response.Body)
 		for decoder.More() {
 			ipfsMessage := struct {
+				From string `json:"from"`
 				Data []byte `json:"data"`
 			}{}
 			err := decoder.Decode(&ipfsMessage)
 			if err != nil {
 				s.Errors <- err
+				continue
+			}
+
+			if ipfsMessage.From == peerID {
 				continue
 			}
 
