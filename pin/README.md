@@ -1,6 +1,6 @@
 # pin
 ```go
-import PIN "github.com/computes/ipfs-http-api/pin"
+import "github.com/computes/ipfs-http-api/pin"
 ```
 
 
