@@ -16,7 +16,7 @@ dep ensure --add github.com/computes/ipfs-http-api
 ## Usage
 
 ```go
-import IPFS "github.com/computes/ipfs-http-api"
+import "github.com/computes/ipfs-http-api"
 ```
 
 #### func  Cat

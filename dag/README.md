@@ -1,6 +1,8 @@
 # dag
---
-    import "github.com/computes/ipfs-http-api/dag"
+
+```go
+import "github.com/computes/ipfs-http-api/dag"
+```
 
 
 ## Usage

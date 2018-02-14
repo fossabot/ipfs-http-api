@@ -1,6 +1,8 @@
 # pubsub
---
-    import "github.com/computes/ipfs-http-api/pubsub"
+
+```go
+import "github.com/computes/ipfs-http-api/pubsub"
+```
 
 
 ## Usage
