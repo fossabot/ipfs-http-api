@@ -48,12 +48,14 @@ func (s *Subscription) Connect() error {
 		ID string `json:"ID"`
 	}{}
 	byt, err := ioutil.ReadAll(idresponse.Body)
-	err = json.Unmarshal(byt, &idMessage)
 	if err != nil {
 		return err
 	}
 
-	peerID := idMessage.ID
+	err = json.Unmarshal(byt, &idMessage)
+	if err != nil {
+		return err
+	}
 
 	ipfsURL.Path = "/api/v0/pubsub/sub"
 	ipfsURL.RawQuery = query.Encode()
@@ -78,10 +80,6 @@ func (s *Subscription) Connect() error {
 				continue
 			}
 
-			if ipfsMessage.From == peerID {
-				continue
-			}
-
 			if len(ipfsMessage.Data) == 0 {
 				continue
 			}
@@ -94,6 +92,8 @@ func (s *Subscription) Connect() error {
 	return nil
 }
 
+// DisconnectError is returned when a pubsub sub connection
+// is severed on the server side
 type DisconnectError struct{}
 
 func (e *DisconnectError) Error() string {
