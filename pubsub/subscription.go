@@ -15,19 +15,18 @@ type Subscription struct {
 	ipfsURL  url.URL
 	topic    string
 	response *http.Response
+	closed   bool
 }
 
 // Close closes an open connection. This will return an error if
 // the connection has already been closed.
 func (s *Subscription) Close() error {
-	err := s.response.Body.Close()
-	if err != nil {
-		return err
-	}
+	s.closed = true
 
 	close(s.Messages)
 	close(s.Errors)
-	return nil
+
+	return s.response.Body.Close()
 }
 
 // Connect establishes an IPFS connection. This method will panic
@@ -76,7 +75,7 @@ func (s *Subscription) Connect() error {
 			}{}
 			err := decoder.Decode(&ipfsMessage)
 			if err != nil {
-				s.Errors <- err
+				s.emitError(err)
 				continue
 			}
 
@@ -84,12 +83,28 @@ func (s *Subscription) Connect() error {
 				continue
 			}
 
-			s.Messages <- ipfsMessage.Data
+			s.emitMessage(ipfsMessage.Data)
 		}
-		s.Errors <- &DisconnectError{}
+		s.emitError(&DisconnectError{})
 	}()
 
 	return nil
+}
+
+func (s *Subscription) emitError(err error) {
+	if s.closed {
+		return
+	}
+
+	s.Errors <- err
+}
+
+func (s *Subscription) emitMessage(msg []byte) {
+	if s.closed {
+		return
+	}
+
+	s.Messages <- msg
 }
 
 // DisconnectError is returned when a pubsub sub connection

@@ -15,6 +15,7 @@ func Subscribe(ipfsURL url.URL, topic string) (*Subscription, error) {
 		Messages: messages,
 		ipfsURL:  ipfsURL,
 		topic:    topic,
+		closed:   false,
 	}
 
 	err := subscription.Connect()
