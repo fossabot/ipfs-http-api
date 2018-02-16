@@ -2,9 +2,9 @@ package pubsub
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"net/http"
 	"net/url"
+	"sync"
 )
 
 // Subscription is a stateful connection to IPFS
@@ -12,19 +12,36 @@ type Subscription struct {
 	Errors   chan error
 	Messages chan []byte
 
-	ipfsURL  url.URL
-	topic    string
-	response *http.Response
-	closed   bool
+	ipfsURL     url.URL
+	topic       string
+	response    *http.Response
+	closed      bool
+	closedMutex sync.Mutex
+}
+
+// NewSubscription constructs a new subscription
+func NewSubscription(ipfsURL url.URL, topic string) *Subscription {
+	return &Subscription{
+		Errors:   make(chan error),
+		Messages: make(chan []byte),
+
+		ipfsURL:     ipfsURL,
+		topic:       topic,
+		closed:      false,
+		closedMutex: sync.Mutex{},
+	}
 }
 
 // Close closes an open connection. This will return an error if
 // the connection has already been closed.
 func (s *Subscription) Close() error {
-	s.closed = true
+	s.closedMutex.Lock()
 
+	s.closed = true
 	close(s.Messages)
 	close(s.Errors)
+
+	s.closedMutex.Unlock()
 
 	return s.response.Body.Close()
 }
@@ -34,27 +51,10 @@ func (s *Subscription) Close() error {
 // channels
 func (s *Subscription) Connect() error {
 	ipfsURL := s.ipfsURL
+
 	query := ipfsURL.Query()
 	query.Add("arg", s.topic)
 	query.Add("discover", "true")
-
-	ipfsURL.Path = "/api/v0/id"
-	idresponse, err := http.Get(ipfsURL.String())
-	if err != nil {
-		return err
-	}
-	idMessage := struct {
-		ID string `json:"ID"`
-	}{}
-	byt, err := ioutil.ReadAll(idresponse.Body)
-	if err != nil {
-		return err
-	}
-
-	err = json.Unmarshal(byt, &idMessage)
-	if err != nil {
-		return err
-	}
 
 	ipfsURL.Path = "/api/v0/pubsub/sub"
 	ipfsURL.RawQuery = query.Encode()
@@ -92,19 +92,23 @@ func (s *Subscription) Connect() error {
 }
 
 func (s *Subscription) emitError(err error) {
+	s.closedMutex.Lock()
 	if s.closed {
 		return
 	}
 
 	s.Errors <- err
+	s.closedMutex.Unlock()
 }
 
 func (s *Subscription) emitMessage(msg []byte) {
+	s.closedMutex.Lock()
 	if s.closed {
 		return
 	}
 
 	s.Messages <- msg
+	s.closedMutex.Unlock()
 }
 
 // DisconnectError is returned when a pubsub sub connection

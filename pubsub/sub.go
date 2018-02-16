@@ -4,20 +4,15 @@ import (
 	"net/url"
 )
 
-// Subscribe will subscribe to a given topic and returns
-// a channel for messages and a channel for errors
+// Subscribe will construct a subscription instance and
+// call connect on it.
 func Subscribe(ipfsURL url.URL, topic string) (*Subscription, error) {
-	messages := make(chan []byte)
-	errors := make(chan error)
-
-	subscription := &Subscription{
-		Errors:   errors,
-		Messages: messages,
-		ipfsURL:  ipfsURL,
-		topic:    topic,
-		closed:   false,
-	}
+	subscription := NewSubscription(ipfsURL, topic)
 
 	err := subscription.Connect()
-	return subscription, err
+	if err != nil {
+		return nil, err
+	}
+
+	return subscription, nil
 }
