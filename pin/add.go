@@ -16,6 +16,10 @@ func Add(ipfsURL url.URL, address string) error {
 	pinAddURL.RawQuery = query.Encode()
 
 	debug("Add %v", pinAddURL.String())
-	_, err := http.Get(pinAddURL.String())
-	return err
+	request, err := http.Get(pinAddURL.String())
+	if err != nil {
+		return err
+	}
+	defer request.Close()
+	return nil
 }
