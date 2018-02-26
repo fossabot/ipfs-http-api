@@ -16,6 +16,11 @@ func Publish(ipfsURL url.URL, topic, payload string) error {
 	ipfsURL.RawQuery = query.Encode()
 
 	debug("Publish %v", ipfsURL.String())
-	_, err := http.Get(ipfsURL.String())
-	return err
+	request, err := http.Get(ipfsURL.String())
+	if err != nil {
+		return err
+	}
+
+	defer request.Close()
+	return nil
 }

@@ -22,6 +22,7 @@ func Resolve(ipfsURL url.URL, address string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	defer reader.Close()
 
 	data, err := ioutil.ReadAll(reader)
 	if err != nil {

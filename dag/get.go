@@ -4,6 +4,7 @@ import (
 	"io"
 	"io/ioutil"
 	"net/url"
+	"runtime"
 
 	"github.com/computes/ipfs-http-api/http"
 )
@@ -17,7 +18,9 @@ func Get(ipfsURL url.URL, address string) (io.ReadCloser, error) {
 	dagGetURL.Path = "/api/v0/dag/get"
 	dagGetURL.RawQuery = query.Encode()
 
-	debug("Get %v", dagGetURL.String())
+	buf := make([]byte, 1024)
+	runtime.Stack(buf, false)
+	debug("Get %v: %v", dagGetURL.String(), string(buf))
 	return http.Get(dagGetURL.String())
 }
 
@@ -28,6 +31,7 @@ func GetBytes(ipfsURL url.URL, address string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer reader.Close()
 
 	return ioutil.ReadAll(reader)
 }
