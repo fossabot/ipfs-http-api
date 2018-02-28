@@ -2,7 +2,6 @@
 
 ## Installation
 
-
 ```shell
 dep ensure --add github.com/computes/ipfs-http-api
 ```
