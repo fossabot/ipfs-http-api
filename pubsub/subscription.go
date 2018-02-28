@@ -35,13 +35,23 @@ func NewSubscription(ipfsURL url.URL, topic string) *Subscription {
 // Close closes an open connection. This will return an error if
 // the connection has already been closed.
 func (s *Subscription) Close() error {
+	go func() {
+		for !s.closed {
+			<-s.Messages
+		}
+	}()
+	go func() {
+		for !s.closed {
+			<-s.Errors
+		}
+	}()
+
 	s.closedMutex.Lock()
+	defer s.closedMutex.Unlock()
 
 	s.closed = true
 	close(s.Messages)
 	close(s.Errors)
-
-	s.closedMutex.Unlock()
 
 	return s.response.Body.Close()
 }
@@ -93,22 +103,22 @@ func (s *Subscription) Connect() error {
 
 func (s *Subscription) emitError(err error) {
 	s.closedMutex.Lock()
+	defer s.closedMutex.Unlock()
 	if s.closed {
 		return
 	}
 
 	s.Errors <- err
-	s.closedMutex.Unlock()
 }
 
 func (s *Subscription) emitMessage(msg []byte) {
 	s.closedMutex.Lock()
+	defer s.closedMutex.Unlock()
 	if s.closed {
 		return
 	}
 
 	s.Messages <- msg
-	s.closedMutex.Unlock()
 }
 
 // DisconnectError is returned when a pubsub sub connection
