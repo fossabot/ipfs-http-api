@@ -2,7 +2,6 @@ package dag
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"net/url"
 
 	"github.com/computes/ipfs-http-api/http"
@@ -24,18 +23,14 @@ func Resolve(ipfsURL url.URL, address string) (string, error) {
 	}
 	defer reader.Close()
 
-	data, err := ioutil.ReadAll(reader)
-	if err != nil {
-		return "", err
-	}
-
 	resolveResponse := struct {
 		Cid struct {
 			Address string `json:"/"`
 		}
 	}{}
 
-	err = json.Unmarshal(data, &resolveResponse)
+	decoder := json.NewDecoder(reader)
+	err = decoder.Decode(&resolveResponse)
 	if err != nil {
 		return "", err
 	}
