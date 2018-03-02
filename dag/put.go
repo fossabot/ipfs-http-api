@@ -39,6 +39,7 @@ func Put(ipfsURL url.URL, reader io.Reader) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	defer response.Body.Close()
 
 	if response.StatusCode != http.StatusOK {
 		return "", fmt.Errorf("unexpected status code returned. Expected 200, received %v", response.StatusCode)
@@ -49,6 +50,7 @@ func Put(ipfsURL url.URL, reader io.Reader) (string, error) {
 			Value string `json:"/"`
 		}
 	}{}
+
 	decoder := json.NewDecoder(response.Body)
 	err = decoder.Decode(&dagPutResponse)
 	if err != nil {
