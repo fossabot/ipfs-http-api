@@ -7,9 +7,15 @@
   packages = ["."]
   revision = "7cb67a40409f4bbd31b6d0e8eb8b662bbdd3e252"
 
+[[projects]]
+  name = "github.com/computes/go-test-server"
+  packages = ["."]
+  revision = "48c8186100c97da8282f068008c154380e64ed72"
+  version = "v1.1.0"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "8c38deaaa575c9eb6bcd9d223f2a7e68bca1a9d892fb729ee5b7871508c5e714"
+  inputs-digest = "fe4b105a77eacf3d9bee795a6e8270aa39dfe7aeda00346ca9c0a07d67ed5f3c"
   solver-name = "gps-cdcl"
   solver-version = 1

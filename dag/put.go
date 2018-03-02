@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"mime/multipart"
 	"net/http"
 	"net/url"
@@ -39,14 +38,10 @@ func Put(ipfsURL url.URL, reader io.Reader) (string, error) {
 	if err != nil {
 		return "", err
 	}
-
-	body, err := ioutil.ReadAll(response.Body)
-	if err != nil {
-		return "", err
-	}
+	defer response.Body.Close()
 
 	if response.StatusCode != http.StatusOK {
-		return "", fmt.Errorf("Unexpected status code returned. Expected 200, received %v.\n%v", response.StatusCode, string(body))
+		return "", fmt.Errorf("unexpected status code returned. Expected 200, received %v", response.StatusCode)
 	}
 
 	dagPutResponse := struct {
@@ -54,7 +49,9 @@ func Put(ipfsURL url.URL, reader io.Reader) (string, error) {
 			Value string `json:"/"`
 		}
 	}{}
-	err = json.Unmarshal(body, &dagPutResponse)
+
+	decoder := json.NewDecoder(response.Body)
+	err = decoder.Decode(&dagPutResponse)
 	if err != nil {
 		return "", err
 	}
