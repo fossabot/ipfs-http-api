@@ -7,7 +7,7 @@ import (
 	"github.com/computes/ipfs-http-api/http"
 )
 
-// ID returns a reader for the ipfs node info
+// ID returns a reader of the IPFS node info
 func ID(ipfsURL url.URL) (io.ReadCloser, error) {
 	query := url.Values{}
 
