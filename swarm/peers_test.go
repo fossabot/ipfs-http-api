@@ -24,5 +24,4 @@ func TestPeers(t *testing.T) {
 	if string(body) != "foo" {
 		t.Fatalf(`Expected body == "foo", Actual body == "%s"`, body)
 	}
-
 }
