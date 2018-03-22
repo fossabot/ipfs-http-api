@@ -1,6 +1,8 @@
 package pin
 
 import (
+	"io"
+	"io/ioutil"
 	"net/url"
 
 	"github.com/computes/ipfs-http-api/http"
@@ -16,10 +18,11 @@ func Add(ipfsURL url.URL, address string) error {
 	pinAddURL.RawQuery = query.Encode()
 
 	debug("Add %v", pinAddURL.String())
-	request, err := http.Get(pinAddURL.String())
+	resp, err := http.Get(pinAddURL.String())
 	if err != nil {
 		return err
 	}
-	defer request.Close()
+	io.Copy(ioutil.Discard, resp)
+	defer resp.Close()
 	return nil
 }

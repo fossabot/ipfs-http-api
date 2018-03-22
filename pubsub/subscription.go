@@ -2,6 +2,8 @@ package pubsub
 
 import (
 	"encoding/json"
+	"io"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 	"sync"
@@ -52,7 +54,7 @@ func (s *Subscription) Close() error {
 	s.closed = true
 	close(s.Messages)
 	close(s.Errors)
-
+	io.Copy(ioutil.Discard, s.response.Body)
 	return s.response.Body.Close()
 }
 

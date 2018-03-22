@@ -26,11 +26,12 @@ func Get(ipfsURL url.URL, address string) (io.ReadCloser, error) {
 // into memory
 func GetBytes(ipfsURL url.URL, address string) ([]byte, error) {
 	reader, err := Get(ipfsURL, address)
+	if reader != nil {
+		defer reader.Close()
+	}
 	if err != nil {
 		return nil, err
 	}
-
-	defer reader.Close()
 
 	message := json.RawMessage{}
 	decoder := json.NewDecoder(reader)
