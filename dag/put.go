@@ -36,10 +36,12 @@ func Put(ipfsURL url.URL, reader io.Reader) (string, error) {
 
 	debug("Put %v %s", ipfsURL.String(), buffer.Bytes())
 	response, err := http.Post(dagPutURL.String(), writer.FormDataContentType(), &buffer)
+	if response != nil {
+		defer response.Body.Close()
+	}
 	if err != nil {
 		return "", err
 	}
-	defer response.Body.Close()
 
 	if response.StatusCode != http.StatusOK {
 		return "", fmt.Errorf("unexpected status code returned. Expected 200, received %v", response.StatusCode)

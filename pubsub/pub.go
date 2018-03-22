@@ -1,6 +1,8 @@
 package pubsub
 
 import (
+	"io"
+	"io/ioutil"
 	"net/url"
 
 	"github.com/computes/ipfs-http-api/http"
@@ -20,7 +22,7 @@ func Publish(ipfsURL url.URL, topic, payload string) error {
 	if err != nil {
 		return err
 	}
-
+	io.Copy(ioutil.Discard, reader)
 	defer reader.Close()
 	return nil
 }

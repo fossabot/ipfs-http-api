@@ -3,6 +3,7 @@ package http
 import (
 	"fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
 )
 
@@ -10,9 +11,15 @@ import (
 func Get(getURL string) (io.ReadCloser, error) {
 	res, err := http.Get(getURL)
 	if err != nil {
+		if res != nil {
+			io.Copy(ioutil.Discard, res.Body)
+			res.Body.Close()
+		}
 		return nil, err
 	}
 	if res.StatusCode != 200 {
+		io.Copy(ioutil.Discard, res.Body)
+		res.Body.Close()
 		return nil, NewResponseError(res, "unexpected non 200 status code on %v: %v", getURL, res.StatusCode)
 	}
 
