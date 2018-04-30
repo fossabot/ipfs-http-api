@@ -15,7 +15,7 @@ import (
 func Put(ipfsURL *url.URL, reader io.Reader) (string, error) {
 	var buffer bytes.Buffer
 
-	dagPutURL := ipfsURL
+	dagPutURL := *ipfsURL
 	dagPutURL.Path = "/api/v0/dag/put"
 
 	writer := multipart.NewWriter(&buffer)

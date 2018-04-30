@@ -12,7 +12,7 @@ func Cat(ipfsURL *url.URL, address string) (io.ReadCloser, error) {
 	query := url.Values{}
 	query.Add("arg", address)
 
-	catURL := ipfsURL
+	catURL := *ipfsURL
 	catURL.Path = "/api/v0/cat"
 	catURL.RawQuery = query.Encode()
 

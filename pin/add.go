@@ -13,7 +13,7 @@ func Add(ipfsURL *url.URL, address string) error {
 	query := url.Values{}
 	query.Add("arg", address)
 
-	pinAddURL := ipfsURL
+	pinAddURL := *ipfsURL
 	pinAddURL.Path = "/api/v0/pin/add"
 	pinAddURL.RawQuery = query.Encode()
 

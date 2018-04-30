@@ -59,17 +59,17 @@ func (s *Subscription) Close() error {
 // if it is called after Close because it'll try to write to closed
 // channels
 func (s *Subscription) Connect() error {
-	ipfsURL := s.ipfsURL
 
-	query := ipfsURL.Query()
+	query := url.Values{}
 	query.Add("arg", s.topic)
 	query.Add("discover", "true")
 
-	ipfsURL.Path = "/api/v0/pubsub/sub"
-	ipfsURL.RawQuery = query.Encode()
+	subURL := *s.ipfsURL
+	subURL.Path = "/api/v0/pubsub/sub"
+	subURL.RawQuery = query.Encode()
 
-	debug("Subscribe %v", ipfsURL.String())
-	response, err := http.Get(ipfsURL.String())
+	debug("Subscribe %v", subURL.String())
+	response, err := http.Get(subURL.String())
 	if err != nil {
 		return err
 	}

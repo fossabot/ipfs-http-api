@@ -13,7 +13,7 @@ func Get(ipfsURL *url.URL, address string) (io.ReadCloser, error) {
 	query := url.Values{}
 	query.Add("arg", address)
 
-	dagGetURL := ipfsURL
+	dagGetURL := *ipfsURL
 	dagGetURL.Path = "/api/v0/dag/get"
 	dagGetURL.RawQuery = query.Encode()
 

@@ -11,7 +11,7 @@ import (
 func Peers(ipfsURL *url.URL) (io.ReadCloser, error) {
 	query := url.Values{}
 
-	swarmPeersURL := ipfsURL
+	swarmPeersURL := *ipfsURL
 	swarmPeersURL.Path = "/api/v0/swarm/peers"
 	swarmPeersURL.RawQuery = query.Encode()
 

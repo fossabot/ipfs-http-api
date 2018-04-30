@@ -12,7 +12,7 @@ func Resolve(ipfsURL *url.URL, address string) (string, error) {
 	query := url.Values{}
 	query.Add("arg", address)
 
-	dagResolveURL := ipfsURL
+	dagResolveURL := *ipfsURL
 	dagResolveURL.Path = "/api/v0/dag/resolve"
 	dagResolveURL.RawQuery = query.Encode()
 
