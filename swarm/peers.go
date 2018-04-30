@@ -8,7 +8,7 @@ import (
 )
 
 // Peers list peers with open connections
-func Peers(ipfsURL url.URL) (io.ReadCloser, error) {
+func Peers(ipfsURL *url.URL) (io.ReadCloser, error) {
 	query := url.Values{}
 
 	swarmPeersURL := ipfsURL

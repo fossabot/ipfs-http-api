@@ -8,7 +8,7 @@ import (
 )
 
 // ID returns a reader of the IPFS node info
-func ID(ipfsURL url.URL) (io.ReadCloser, error) {
+func ID(ipfsURL *url.URL) (io.ReadCloser, error) {
 	query := url.Values{}
 
 	idURL := ipfsURL

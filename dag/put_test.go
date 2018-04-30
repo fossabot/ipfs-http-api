@@ -62,7 +62,7 @@ func TestPutNoServer(t *testing.T) {
 		t.Fatal("Error on url.Parse", err.Error())
 	}
 
-	addr, err := Put(*ipfsURL, bytes.NewBuffer([]byte(`"foo"`)))
+	addr, err := Put(ipfsURL, bytes.NewBuffer([]byte(`"foo"`)))
 	if err == nil {
 		t.Fatal("Expected err on Put(), received nil")
 	}

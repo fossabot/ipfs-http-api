@@ -8,7 +8,7 @@ import (
 )
 
 // Resolve resolves a ipld reference in IPFS
-func Resolve(ipfsURL url.URL, address string) (string, error) {
+func Resolve(ipfsURL *url.URL, address string) (string, error) {
 	query := url.Values{}
 	query.Add("arg", address)
 

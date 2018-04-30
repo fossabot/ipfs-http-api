@@ -9,7 +9,7 @@ import (
 )
 
 // Add pins a an IPFS object recursively
-func Add(ipfsURL url.URL, address string) error {
+func Add(ipfsURL *url.URL, address string) error {
 	query := url.Values{}
 	query.Add("arg", address)
 

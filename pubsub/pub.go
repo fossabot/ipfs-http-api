@@ -9,7 +9,7 @@ import (
 )
 
 // Publish will publish the content to a given URL
-func Publish(ipfsURL url.URL, topic, payload string) error {
+func Publish(ipfsURL *url.URL, topic, payload string) error {
 	query := ipfsURL.Query()
 	query.Add("arg", topic)
 	query.Add("arg", payload)

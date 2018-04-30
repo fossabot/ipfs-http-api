@@ -10,12 +10,12 @@
 [[projects]]
   name = "github.com/computes/go-test-server"
   packages = ["."]
-  revision = "48c8186100c97da8282f068008c154380e64ed72"
-  version = "v1.1.0"
+  revision = "06dbbc9fc62246350d65d8148c6ec891bfb912eb"
+  version = "v1.2.0"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "e4a9852b44615a60b2c149ec605fcb041ce471146e7fa1acb1bc08d45c99d43a"
+  inputs-digest = "7ef31f5997ebd978af513cc218f778ca54231e9b2c07fcb791576c06147e6ff7"
   solver-name = "gps-cdcl"
   solver-version = 1

@@ -12,7 +12,7 @@ type Subscription struct {
 	Errors   chan error
 	Messages chan []byte
 
-	ipfsURL     url.URL
+	ipfsURL     *url.URL
 	topic       string
 	response    *http.Response
 	closed      bool
@@ -20,7 +20,7 @@ type Subscription struct {
 }
 
 // NewSubscription constructs a new subscription
-func NewSubscription(ipfsURL url.URL, topic string) *Subscription {
+func NewSubscription(ipfsURL *url.URL, topic string) *Subscription {
 	return &Subscription{
 		Errors:   make(chan error),
 		Messages: make(chan []byte),

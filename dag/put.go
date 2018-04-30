@@ -12,7 +12,7 @@ import (
 
 // Put uploads a file to IPFS as a DAG Object and returns
 // the address
-func Put(ipfsURL url.URL, reader io.Reader) (string, error) {
+func Put(ipfsURL *url.URL, reader io.Reader) (string, error) {
 	var buffer bytes.Buffer
 
 	dagPutURL := ipfsURL
