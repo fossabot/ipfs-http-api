@@ -62,3 +62,14 @@ func Put(ipfsURL *url.URL, reader io.Reader) (string, error) {
 	debug("Put %v '%v'", dagPutURL.String(), dagPutResponse.Cid.Value)
 	return dagPutResponse.Cid.Value, nil
 }
+
+// PutInterface will take an interface and convert it to a buffer
+// using json.Marshal
+func PutInterface(ipfsURL *url.URL, data interface{}) (string, error) {
+	buf, err := json.Marshal(data)
+	if err != nil {
+		return "", err
+	}
+
+	return Put(ipfsURL, bytes.NewBuffer(buf))
+}
