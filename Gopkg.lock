@@ -10,8 +10,8 @@
 [[projects]]
   name = "github.com/computes/go-test-server"
   packages = ["."]
-  revision = "06dbbc9fc62246350d65d8148c6ec891bfb912eb"
-  version = "v1.2.0"
+  revision = "9db0575c75cd1c28bc0a01cd51ef75370af16fb3"
+  version = "v1.2.2"
 
 [solve-meta]
   analyzer-name = "dep"
