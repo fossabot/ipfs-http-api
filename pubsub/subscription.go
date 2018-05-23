@@ -4,62 +4,45 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/url"
-	"sync"
 )
+
+// Handler is the subscription handler interface
+type Handler interface {
+	Recv(*SubscriptionMessage)
+}
 
 // Subscription is a stateful connection to IPFS
 type Subscription struct {
-	Errors   chan error
-	Messages chan []byte
-
-	ipfsURL     *url.URL
-	topic       string
-	response    *http.Response
-	closed      bool
-	closedMutex sync.Mutex
+	handler Handler
+	ipfsURL *url.URL
+	topic   string
+	closed  bool
 }
 
 // NewSubscription constructs a new subscription
 func NewSubscription(ipfsURL *url.URL, topic string) *Subscription {
 	return &Subscription{
-		Errors:   make(chan error),
-		Messages: make(chan []byte),
-
-		ipfsURL:     ipfsURL,
-		topic:       topic,
-		closed:      false,
-		closedMutex: sync.Mutex{},
+		ipfsURL: ipfsURL,
+		topic:   topic,
+		closed:  false,
 	}
+}
+
+// Handle will register a message handler
+func (s *Subscription) Handle(h Handler) {
+	s.handler = h
 }
 
 // Close closes an open connection. This will return an error if
 // the connection has already been closed.
 func (s *Subscription) Close() error {
-	go func() {
-		for !s.closed {
-			<-s.Messages
-		}
-	}()
-	go func() {
-		for !s.closed {
-			<-s.Errors
-		}
-	}()
-
-	s.closedMutex.Lock()
-	defer s.closedMutex.Unlock()
-
 	s.closed = true
-	close(s.Messages)
-	close(s.Errors)
-	return s.response.Body.Close()
+	return nil
 }
 
-// Connect establishes an IPFS connection. This method will panic
-// if it is called after Close because it'll try to write to closed
-// channels
-func (s *Subscription) Connect() error {
-
+// Start establishes an IPFS connection and passes messages
+// to the handlers
+func (s *Subscription) Start() error {
 	query := url.Values{}
 	query.Add("arg", s.topic)
 	query.Add("discover", "true")
@@ -73,51 +56,29 @@ func (s *Subscription) Connect() error {
 	if err != nil {
 		return err
 	}
-	s.response = response
 
-	go func() {
-		decoder := json.NewDecoder(response.Body)
-		for decoder.More() {
-			ipfsMessage := struct {
-				From string `json:"from"`
-				Data []byte `json:"data"`
-			}{}
-			err := decoder.Decode(&ipfsMessage)
-			if err != nil {
-				s.emitError(err)
-				continue
-			}
-
-			if len(ipfsMessage.Data) == 0 {
-				continue
-			}
-
-			s.emitMessage(ipfsMessage.Data)
+	decoder := json.NewDecoder(response.Body)
+	defer response.Body.Close()
+	for decoder.More() {
+		if s.closed {
+			debug("Closed by client")
+			return nil
 		}
-		s.emitError(&DisconnectError{})
-	}()
 
-	return nil
-}
+		var msg SubscriptionMessage
+		err := decoder.Decode(&msg)
+		if err != nil {
+			debugError(err, "Decode Error")
+			continue
+		}
 
-func (s *Subscription) emitError(err error) {
-	s.closedMutex.Lock()
-	defer s.closedMutex.Unlock()
-	if s.closed {
-		return
+		if s.handler != nil {
+			go s.handler.Recv(&msg)
+		}
 	}
 
-	s.Errors <- err
-}
-
-func (s *Subscription) emitMessage(msg []byte) {
-	s.closedMutex.Lock()
-	defer s.closedMutex.Unlock()
-	if s.closed {
-		return
-	}
-
-	s.Messages <- msg
+	debug("Closed by server")
+	return &DisconnectError{}
 }
 
 // DisconnectError is returned when a pubsub sub connection

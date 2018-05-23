@@ -9,10 +9,7 @@ import (
 func Subscribe(ipfsURL *url.URL, topic string) (*Subscription, error) {
 	subscription := NewSubscription(ipfsURL, topic)
 
-	err := subscription.Connect()
-	if err != nil {
-		return nil, err
-	}
+	go subscription.Start()
 
 	return subscription, nil
 }
