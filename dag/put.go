@@ -34,7 +34,7 @@ func Put(ipfsURL *url.URL, reader io.Reader) (string, error) {
 		return "", err
 	}
 
-	debug("Put %v %s", ipfsURL.String(), buffer.Bytes())
+	debug("Put %v %s", dagPutURL.String(), buffer.Bytes())
 	response, err := http.Post(dagPutURL.String(), writer.FormDataContentType(), &buffer)
 	if response != nil {
 		defer response.Body.Close()
