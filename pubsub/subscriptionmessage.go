@@ -15,13 +15,8 @@ type SubscriptionMessage struct {
 
 // DataAsString will return the Data property as a string
 func (m *SubscriptionMessage) DataAsString() (string, error) {
-	var s string
-	err := json.Unmarshal(m.Data, &s)
-
-	if err != nil {
-		return "", err
-	}
-	return s, nil
+	b, err := m.DataAsBytes()
+	return string(b), err
 }
 
 // DataAsBytes will return the Data property as a byte array
