@@ -4,6 +4,8 @@ import (
 	"io"
 	"net/url"
 
+	"github.com/pkg/errors"
+
 	"github.com/computes/ipfs-http-api/http"
 )
 
