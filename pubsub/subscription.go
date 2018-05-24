@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/url"
+	"sync"
 )
 
 // Handler is the subscription handler interface
@@ -13,6 +14,7 @@ type Handler interface {
 
 // Subscription is a stateful connection to IPFS
 type Subscription struct {
+	Wait    *sync.WaitGroup
 	handler Handler
 	ipfsURL *url.URL
 	topic   string
@@ -21,7 +23,10 @@ type Subscription struct {
 
 // NewSubscription constructs a new subscription
 func NewSubscription(ipfsURL *url.URL, topic string) *Subscription {
+	wait := &sync.WaitGroup{}
+	wait.Add(1)
 	return &Subscription{
+		Wait:    wait,
 		ipfsURL: ipfsURL,
 		topic:   topic,
 		closed:  false,
@@ -53,6 +58,7 @@ func (s *Subscription) Start() error {
 
 	debug("Subscribe %v", subURL.String())
 	response, err := http.Get(subURL.String())
+	s.Wait.Done()
 	if err != nil {
 		return err
 	}
