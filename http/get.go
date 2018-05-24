@@ -5,6 +5,8 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+
+	"github.com/pkg/errors"
 )
 
 // Get will make an http Get request and handle common errors
@@ -15,7 +17,7 @@ func Get(getURL string) (io.ReadCloser, error) {
 			io.Copy(ioutil.Discard, res.Body)
 			res.Body.Close()
 		}
-		return nil, err
+		return nil, errors.Wrap(err, "HTTP Get failed")
 	}
 	if res.StatusCode != 200 {
 		io.Copy(ioutil.Discard, res.Body)

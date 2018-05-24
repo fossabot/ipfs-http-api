@@ -4,6 +4,8 @@ import (
 	"io"
 	"net/url"
 
+	"github.com/pkg/errors"
+
 	"github.com/computes/ipfs-http-api/http"
 )
 
@@ -17,5 +19,10 @@ func Cat(ipfsURL *url.URL, address string) (io.ReadCloser, error) {
 	catURL.RawQuery = query.Encode()
 
 	debug("Cat %v", catURL.String())
-	return http.Get(catURL.String())
+	res, err := http.Get(catURL.String())
+	if err != nil {
+		return nil, errors.Wrap(err, "http.Get failed")
+	}
+
+	return res, nil
 }

@@ -16,6 +16,10 @@ func List(ipfsURL *url.URL) (io.ReadCloser, error) {
 	keyListURL.RawQuery = query.Encode()
 
 	debug("Get %v", keyListURL.String())
-	debugStack()
-	return http.Get(keyListURL.String())
+	res, err := http.Get(keyListURL.String())
+	if err != nil {
+		return nil, errors.Wrap(err, "http.Get failed")
+	}
+
+	return res, nil
 }

@@ -4,6 +4,8 @@ import (
 	"io"
 	"net/url"
 
+	"github.com/pkg/errors"
+
 	"github.com/computes/ipfs-http-api/http"
 )
 
@@ -18,6 +20,10 @@ func Gen(ipfsURL *url.URL, name string) (io.ReadCloser, error) {
 	keyGenURL.RawQuery = query.Encode()
 
 	debug("Get %v", keyGenURL.String())
-	debugStack()
-	return http.Get(keyGenURL.String())
+	res, err := http.Get(keyGenURL.String())
+	if err != nil {
+		return nil, errors.Wrap(err, "http.Get failed")
+	}
+
+	return res, nil
 }

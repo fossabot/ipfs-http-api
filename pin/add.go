@@ -5,6 +5,8 @@ import (
 	"io/ioutil"
 	"net/url"
 
+	"github.com/pkg/errors"
+
 	"github.com/computes/ipfs-http-api/http"
 )
 
@@ -20,7 +22,7 @@ func Add(ipfsURL *url.URL, address string) error {
 	debug("Add %v", pinAddURL.String())
 	resp, err := http.Get(pinAddURL.String())
 	if err != nil {
-		return err
+		return errors.Wrap(err, "http.Get failed")
 	}
 	io.Copy(ioutil.Discard, resp)
 	defer resp.Close()

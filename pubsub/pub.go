@@ -5,6 +5,8 @@ import (
 	"io/ioutil"
 	"net/url"
 
+	"github.com/pkg/errors"
+
 	"github.com/computes/ipfs-http-api/http"
 )
 
@@ -21,7 +23,7 @@ func Publish(ipfsURL *url.URL, topic, payload string) error {
 	debug("Publish %v", pubURL.String())
 	reader, err := http.Get(pubURL.String())
 	if err != nil {
-		return err
+		return errors.Wrap(err, "http.Get failed")
 	}
 	io.Copy(ioutil.Discard, reader)
 	defer reader.Close()
