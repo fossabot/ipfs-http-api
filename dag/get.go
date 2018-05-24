@@ -18,7 +18,6 @@ func Get(ipfsURL *url.URL, address string) (io.ReadCloser, error) {
 	dagGetURL.RawQuery = query.Encode()
 
 	debug("Get %v", dagGetURL.String())
-	debugStack()
 	return http.Get(dagGetURL.String())
 }
 
