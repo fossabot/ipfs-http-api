@@ -10,7 +10,7 @@ func Subscribe(ipfsURL *url.URL, topic string) (*Subscription, error) {
 	subscription := NewSubscription(ipfsURL, topic)
 
 	go subscription.Start()
-	subscription.Wait.Wait()
+	subscription.Wait()
 
 	return subscription, nil
 }

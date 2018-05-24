@@ -14,7 +14,7 @@ type Handler interface {
 
 // Subscription is a stateful connection to IPFS
 type Subscription struct {
-	Wait    *sync.WaitGroup
+	wait    *sync.WaitGroup
 	handler Handler
 	ipfsURL *url.URL
 	topic   string
@@ -26,7 +26,7 @@ func NewSubscription(ipfsURL *url.URL, topic string) *Subscription {
 	wait := &sync.WaitGroup{}
 	wait.Add(1)
 	return &Subscription{
-		Wait:    wait,
+		wait:    wait,
 		ipfsURL: ipfsURL,
 		topic:   topic,
 		closed:  false,
@@ -36,6 +36,11 @@ func NewSubscription(ipfsURL *url.URL, topic string) *Subscription {
 // Handle will register a message handler
 func (s *Subscription) Handle(h Handler) {
 	s.handler = h
+}
+
+// Wait will wait for the subscription to be initialized
+func (s *Subscription) Wait() {
+	s.wait.Wait()
 }
 
 // Close closes an open connection. This will return an error if
@@ -58,7 +63,7 @@ func (s *Subscription) Start() error {
 
 	debug("Subscribe %v", subURL.String())
 	response, err := http.Get(subURL.String())
-	s.Wait.Done()
+	s.wait.Done()
 	if err != nil {
 		return err
 	}
