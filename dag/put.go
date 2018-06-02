@@ -73,6 +73,17 @@ func PutInterface(ipfsURL *url.URL, data interface{}) (string, error) {
 		return "", errors.Wrap(err, "json.Marshal failed")
 	}
 
+	addr, err := PutBytes(ipfsURL, buf)
+	if err != nil {
+		return "", errors.Wrap(err, "Put failed")
+	}
+
+	return addr, nil
+}
+
+// PutBytes will take a byte array and convert it to a buffer
+// using json.Marshal
+func PutBytes(ipfsURL *url.URL, buf []byte) (string, error) {
 	addr, err := Put(ipfsURL, bytes.NewBuffer(buf))
 	if err != nil {
 		return "", errors.Wrap(err, "Put failed")
