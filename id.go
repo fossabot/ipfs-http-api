@@ -1,6 +1,7 @@
 package ipfs
 
 import (
+	"encoding/json"
 	"io"
 	"net/url"
 
@@ -21,4 +22,25 @@ func ID(ipfsURL *url.URL) (io.ReadCloser, error) {
 	}
 
 	return res, nil
+}
+
+// IDBytes returns the IPFS node info as bytes
+func IDBytes(ipfsURL *url.URL) ([]byte, error) {
+	reader, err := ID(ipfsURL)
+
+	if reader != nil {
+		defer reader.Close()
+	}
+	if err != nil {
+		return nil, errors.Wrap(err, "IDBytes failed")
+	}
+
+	message := json.RawMessage{}
+	decoder := json.NewDecoder(reader)
+	err = decoder.Decode(&message)
+	if err != nil {
+		return nil, errors.Wrap(err, "json.Decode failed")
+	}
+
+	return []byte(message), nil
 }

@@ -7,7 +7,7 @@ import (
 
 func TestID(t *testing.T) {
 	server.Reset()
-	server.SetGETResponseBody("/api/v0/id?", `foo`)
+	server.SetGETResponseBody("/api/v0/id?", `"foo"`)
 
 	reader, err := ID(server.URL())
 	if err != nil {
@@ -20,7 +20,21 @@ func TestID(t *testing.T) {
 		t.Fatal("Error on ioutil.ReadAll()", err.Error())
 	}
 
-	if string(body) != "foo" {
+	if string(body) != `"foo"` {
+		t.Fatalf(`Expected body == "foo", Actual body == "%s"`, body)
+	}
+}
+
+func TestIDBytes(t *testing.T) {
+	server.Reset()
+	server.SetGETResponseBody("/api/v0/id?", `"foo"`)
+
+	body, err := IDBytes(server.URL())
+	if err != nil {
+		t.Fatal("Error on ID()", err.Error())
+	}
+
+	if string(body) != `"foo"` {
 		t.Fatalf(`Expected body == "foo", Actual body == "%s"`, body)
 	}
 }
