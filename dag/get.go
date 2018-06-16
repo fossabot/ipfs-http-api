@@ -47,3 +47,17 @@ func GetBytes(ipfsURL *url.URL, address string) ([]byte, error) {
 
 	return []byte(message), nil
 }
+
+// GetInterface retrieves a dag object from IPFS and parses it into
+// the provided interface
+func GetInterface(ipfsURL *url.URL, address string, t interface{}) error {
+	buf, err := GetBytes(ipfsURL, address)
+	if err != nil {
+		return errors.Wrap(err, "DAG.Getbytes failed")
+	}
+	err = json.Unmarshal(buf, &t)
+	if err != nil {
+		return errors.Wrap(err, "json.Unmarshal failed")
+	}
+	return nil
+}

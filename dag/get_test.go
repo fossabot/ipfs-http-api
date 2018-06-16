@@ -40,3 +40,18 @@ func TestGetBytes(t *testing.T) {
 		t.Fatalf(`Expected body == '"foo"', Actual body == '%s'`, string(message))
 	}
 }
+
+func TestGetInterface(t *testing.T) {
+	server.Reset()
+	server.SetGETResponseBody("/api/v0/dag/get?arg=foo-addr", `"foo"`)
+
+	var message string
+	err := GetInterface(server.URL(), "foo-addr", &message)
+	if err != nil {
+		t.Fatal("Error on GetInterface()", err.Error())
+	}
+
+	if string(message) != "foo" {
+		t.Fatalf(`Expected body == 'foo', Actual body == '%s'`, string(message))
+	}
+}
