@@ -1,4 +1,6 @@
 # ipfs
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fcomputes%2Fipfs-http-api.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fcomputes%2Fipfs-http-api?ref=badge_shield)
+
 
 
 ## Installation
@@ -34,3 +36,7 @@ func ID(ipfsURL url.URL) (io.ReadCloser, error)
 ```
 
 ID returns a reader of the IPFS node info
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fcomputes%2Fipfs-http-api.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fcomputes%2Fipfs-http-api?ref=badge_large)
